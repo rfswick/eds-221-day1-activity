@@ -1,0 +1,69 @@
+---
+title: "STL Lead Inequality"
+author: "Rachel Swick"
+format: html
+---
+
+```{r}
+library(tidyverse)
+library(janitor)
+```
+
+```{r}
+stl_lead <- read_csv(here::here("data", "stl_blood_lead.csv"))
+
+stl_lead <- stl_lead |> clean_names()
+```
+
+```{r}
+skimr::skim(stl_lead)
+
+dim(stl_lead)
+names(stl_lead)
+```
+
+```{r}
+stl_lead_prop <- stl_lead |> dplyr::mutate(prop_white = (white / total_pop)* 100)
+```
+
+```{r}
+# create a scatterplot
+stl_lead_plot <- ggplot(data = stl_lead_prop, 
+                        aes(x = pct_elevated,
+                            y = prop_white))+
+  geom_point(aes(color = prop_white,
+                 size = 2,
+                 alpha = 0.5),
+                 show.legend = FALSE)+
+  scale_color_gradient(low = "red", high = "pink")+
+  labs( title = "Childern with Elevated Blood Lead Levels",
+        x = "Elevated Blood Lead Levels",
+        y = "Percentage of White Counties in Census")
+
+stl_lead_plot
+ggsave("stl_lead_plot_fig", 
+       plot = stl_lead_plot, 
+       device = "png",
+       width = 6,
+       height = 5)
+```
+
+
+```{r}
+ggplot(data = stl_lead_prop,
+       aes(x = pct_elevated))+
+  geom_histogram(color = "red", fill = "purple")
+  
+```
+
+
+
+
+
+
+
+
+
+
+
+
